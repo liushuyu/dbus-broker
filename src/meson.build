@@ -12,6 +12,14 @@ endif
 # target: libbus.so
 #
 
+sources_common = [
+        'util/error.c',
+        'util/fs.c',
+        'util/log.c',
+        'util/misc.c',
+        'util/string.c',
+]
+
 sources_bus = [
         'broker/broker.c',
         'broker/controller.c',
@@ -32,20 +40,17 @@ sources_bus = [
         'dbus/queue.c',
         'dbus/sasl.c',
         'dbus/socket.c',
-        'util/error.c',
         'util/dirwatch.c',
         'util/dispatch.c',
         'util/fdlist.c',
-        'util/fs.c',
-        'util/log.c',
         'util/metrics.c',
-        'util/misc.c',
         'util/proc.c',
         'util/sockopt.c',
-        'util/string.c',
         'util/systemd.c',
         'util/user.c',
 ]
+
+sources_bus += sources_common
 
 deps_bus = [
         dep_cdvar,
@@ -166,6 +171,26 @@ if use_launcher
                 link_depends: [
                         exe_dbus_broker,
                 ],
+        )
+endif
+
+#
+# target: dbus-broker-session
+#
+
+sources_session = [
+        'session/main.c',
+]
+sources_session += sources_common
+
+if use_launcher
+        exe_dbus_broker_session = executable(
+                'dbus-broker-session',
+                sources_session,
+                dependencies: [
+                        dep_cstdaux,
+                ],
+                install: true,
         )
 endif
 
